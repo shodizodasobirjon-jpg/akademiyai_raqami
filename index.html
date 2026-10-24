@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="tg" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Академияи Рақамӣ | Платформаи Таълимии Математика</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        },
+                        emeraldCustom: {
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-header {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.4);
+        }
+        .glow-green {
+            box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.4);
+        }
+        .glow-red {
+            box-shadow: 0 0 20px -3px rgba(244, 63, 94, 0.4);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        @keyframes fadeInQuick {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeInQuick 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans selection:bg-brand-500 selection:text-white antialiased">
+
+    <!-- HEADER / BRANDING -->
+    <header class="sticky top-0 z-50 glass-header px-4 lg:px-8 py-3.5 shadow-lg">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-emeraldCustom-400 p-0.5 shadow-lg glow-effect flex items-center justify-center">
+                    <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid font-bold fa-calculator text-2xl text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-emeraldCustom-400"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                        Академияи Рақамӣ
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-500 border border-brand-500/30">Платформаи Интерактивӣ</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">Платформаи муосири таълимии математика барои хонандагон ва донишҷӯён</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                <div class="flex items-center gap-3 bg-slate-800/80 border border-slate-700/60 rounded-xl p-2 px-4 shadow-inner">
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                            С
+                        </div>
+                        <span id="user-level-badge" class="absolute -bottom-1 -right-1 bg-emeraldCustom-500 text-[10px] font-bold text-slate-950 px-1 rounded-full border border-slate-900">12</span>
+                    </div>
+                    <div class="text-left">
+                        <div class="flex items-center gap-1.5">
+                            <span id="user-name-display" class="font-bold text-sm text-slate-100">Содиқ (ДДК)</span>
+                            <span id="user-badge-display" class="text-[11px] font-medium text-emeraldCustom-400 bg-emeraldCustom-500/10 border border-emeraldCustom-500/20 px-2 py-0.2 rounded-full">Устоди Алгебра</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs text-slate-400 mt-0.5">
+                            <span class="flex items-center text-amber-400 font-semibold" title="Баллҳо">
+                                <i class="fa-solid fa-star text-amber-400 mr-1"></i> <span id="user-xp-display">1280</span> XP
+                            </span>
+                            <span class="flex items-center text-rose-400 font-semibold" title="Силсилаи воридшавии пайваста (Streak)">
+                                <i class="fa-solid fa-fire text-rose-500 mr-1"></i> <span id="user-streak-display">7</span> рӯз
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MANDATORY DAILY ATTENDANCE WARNING BANNER -->
+    <div class="bg-gradient-to-r from-amber-600/30 via-rose-600/30 to-amber-600/30 border-b border-rose-500/40 px-4 py-2.5 text-center relative shadow-inner">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs md:text-sm">
+            <div class="flex items-center gap-2 text-rose-200 font-bold">
+                <span class="flex h-3 w-3 relative">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+                </span>
+                <i class="fa-solid fa-triangle-exclamation text-amber-400 text-base"></i>
+                <span>ОГОҲИИ СИСТЕМА: Даромадани шумо ҳаррӯза ҳатмист! Дар сурати надаромадан (ғоиб будан), аз баллҳои шумо 50 XP кам карда мешавад.</span>
+            </div>
+
+            <button onclick="simulateMissedDay()" class="px-3 py-1 bg-rose-600/80 hover:bg-rose-600 border border-rose-400 text-white rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all shadow shrink-0">
+                <i class="fa-solid fa-calendar-minus"></i>
+                <span>Санҷиш: Симуляцияи ғоибӣ (-1 рӯз)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN BODY LAYOUT -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-6">
+
+        <!-- NAVIGATION TABS -->
+        <nav class="flex p-1.5 space-x-2 bg-slate-800/90 rounded-2xl border border-slate-700/80 shadow-md">
+            <button onclick="switchTab('generator')" id="tab-btn-generator" class="flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 bg-brand-600 text-white shadow-md glow-effect">
+                <i class="fa-solid fa-dice text-lg"></i>
+                <span>Машқ ва Масъалаҳо</span>
+            </button>
+            <button onclick="switchTab('leaderboard')" id="tab-btn-leaderboard" class="flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50">
+                <i class="fa-solid fa-trophy text-lg text-amber-400"></i>
+                <span>Ҷадвали Пешсафон</span>
+            </button>
+            <button onclick="switchTab('profile')" id="tab-btn-profile" class="flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50">
+                <i class="fa-solid fa-chart-pie text-lg text-emeraldCustom-400"></i>
+                <span>Профил ва Омор</span>
+            </button>
+        </nav>
+
+        <!-- SECTION 1: PROBLEM GENERATOR -->
+        <section id="section-generator" class="space-y-6">
+            <div class="glass-panel rounded-2xl p-5 md:p-6 shadow-xl border border-slate-700/80 space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+                        <i class="fa-solid fa-layer-group text-brand-500 mr-1.5"></i> Категорияи математикӣ
+                    </label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <button onclick="setCategory('arithmetic')" id="cat-arithmetic" class="category-btn p-3 rounded-xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition-all bg-brand-600/20 border-brand-500 text-white shadow">
+                            <i class="fa-solid fa-calculator text-base text-brand-400"></i>
+                            Арифметика
+                        </button>
+                        <button onclick="setCategory('algebra')" id="cat-algebra" class="category-btn p-3 rounded-xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition-all bg-slate-800/80 border-slate-700 text-slate-400 hover:border-slate-600">
+                            <i class="fa-solid fa-square-root-variable text-base text-brand-400"></i>
+                            Алгебра
+                        </button>
+                        <button onclick="setCategory('geometry')" id="cat-geometry" class="category-btn p-3 rounded-xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition-all bg-slate-800/80 border-slate-700 text-slate-400 hover:border-slate-600">
+                            <i class="fa-solid fa-shapes text-base text-brand-400"></i>
+                            Геометрия
+                        </button>
+                        <button onclick="setCategory('equations')" id="cat-equations" class="category-btn p-3 rounded-xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition-all bg-slate-800/80 border-slate-700 text-slate-400 hover:border-slate-600">
+                            <i class="fa-solid fa-equals text-base text-brand-400"></i>
+                            Муодилаҳо
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-3 border-t border-slate-800">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+                            <i class="fa-solid fa-signal text-emeraldCustom-400 mr-1.5"></i> Дараҷаи мушкилӣ
+                        </label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setDifficulty('easy')" id="diff-easy" class="diff-btn py-2.5 rounded-xl border text-xs font-semibold text-center transition-all bg-emeraldCustom-500/20 border-emeraldCustom-500 text-emeraldCustom-400">
+                                Осон (+10 XP)
+                            </button>
+                            <button onclick="setDifficulty('medium')" id="diff-medium" class="diff-btn py-2.5 rounded-xl border text-xs font-semibold text-center transition-all bg-slate-800/80 border-slate-700 text-slate-400 hover:border-slate-600">
+                                Миёна (+20 XP)
+                            </button>
+                            <button onclick="setDifficulty('hard')" id="diff-hard" class="diff-btn py-2.5 rounded-xl border text-xs font-semibold text-center transition-all bg-slate-800/80 border-slate-700 text-slate-400 hover:border-slate-600">
+                                Мураккаб (+35 XP)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+                            <i class="fa-solid fa-bolt text-amber-400 mr-1.5"></i> Ҳолати гузариши саволҳо
+                        </label>
+                        <div class="flex items-center justify-between p-2.5 bg-slate-900/80 border border-slate-700 rounded-xl">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-forward-fast text-brand-400"></i>
+                                <div>
+                                    <div class="text-xs font-bold text-white">Ҳолати пайваста (Авто-савол)</div>
+                                    <div class="text-[11px] text-slate-400">Гузариши худкор ба саволи нави бетакрор</div>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="continuous-mode-toggle" onchange="toggleContinuousMode()" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emeraldCustom-500"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="problem-card" class="glass-panel rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-700/80 relative overflow-hidden transition-all duration-300">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-brand-500 via-emeraldCustom-400 to-indigo-600"></div>
+
+                <div class="flex items-center justify-between mb-6">
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emeraldCustom-500 animate-pulse"></span>
+                        Масъалаи бетакрор <span id="problem-id-display">#1042</span>
+                    </span>
+                    
+                    <button onclick="generateNewProblem(true)" class="text-xs font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1.5 bg-brand-500/10 hover:bg-brand-500/20 border border-brand-500/30 px-3 py-1.5 rounded-lg transition-all">
+                        <i class="fa-solid fa-arrows-rotate"></i> Саволи нави бетакрор
+                    </button>
+                </div>
+
+                <div id="question-content-box" class="animate-fade-in mb-8">
+                    <h2 id="question-text" class="text-xl md:text-2xl font-bold text-slate-100 leading-snug">
+                        Дар ҳоли генерацияи саволи бетакрор...
+                    </h2>
+                    <p id="question-hint" class="text-sm text-slate-400 mt-2">
+                        Маслиҳат: Масъаларо бодиққат хонед ва ҷавобро ворид намоед.
+                    </p>
+                </div>
+
+                <div class="space-y-4 max-w-2xl">
+                    <form onsubmit="checkAnswer(event)" class="flex flex-col sm:flex-row gap-3">
+                        <div class="relative flex-1">
+                            <input type="text" id="user-answer-input" placeholder="Ҷавоби худро ворид кунед..." autocomplete="off"
+                                class="w-full px-4 py-3.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 font-semibold text-lg transition-all">
+                        </div>
+                        <button type="submit" id="btn-submit-answer" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg glow-effect transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Санҷидан</span>
+                        </button>
+                    </form>
+
+                    <div id="feedback-message" class="hidden rounded-xl p-4 text-sm font-semibold flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all duration-300">
+                        <div class="flex items-center gap-3" id="feedback-text-wrapper"></div>
+                        <button onclick="generateNewProblem(true)" id="btn-next-question" class="w-full sm:w-auto px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white border border-slate-700 text-xs font-bold rounded-lg shadow flex items-center justify-center gap-1.5 transition-all whitespace-nowrap">
+                            <span>Саволи бетакрори навбатӣ</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                    <button onclick="toggleSolutions()" id="btn-toggle-solution" class="text-xs font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                        <span>Усулҳои ҳалли муфассал</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform" id="chevron-icon"></i>
+                    </button>
+                    
+                    <span class="text-xs text-slate-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-award text-amber-400"></i>
+                        Барои ҷавоби дуруст: <strong id="xp-reward-text" class="text-emeraldCustom-400">+10 XP</strong>
+                    </span>
+                </div>
+
+                <div id="solutions-panel" class="hidden mt-6 space-y-4 pt-4 border-t border-slate-800/60 animate-fade-in">
+                    <div class="bg-slate-900/80 rounded-2xl p-5 border border-slate-800">
+                        <h3 class="text-sm font-bold text-brand-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-book-bookmark"></i> Фаҳмондадиҳии қадам ба қадам (Усулҳои гуногун)
+                        </h3>
+                        <div id="methods-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: LEADERBOARD -->
+        <section id="section-leaderboard" class="hidden space-y-6">
+            <div class="glass-panel rounded-2xl p-6 shadow-xl border border-slate-700/80">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-trophy text-amber-400"></i> Ҷадвали Пешсафони Муассисаҳо
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Рӯйхати беҳтарин хонандагон ва донишҷӯён дар Тоҷикистон</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <div class="relative flex-1 md:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                            <input type="text" id="search-leaderboard" onkeyup="filterLeaderboard()" placeholder="Ҷустуҷӯи хонанда..." 
+                                class="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-700 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                <th class="p-3">Мақом</th>
+                                <th class="p-3">Хонанда / Донишҷӯ</th>
+                                <th class="p-3">Муассиса</th>
+                                <th class="p-3 text-center">Баллҳо (XP)</th>
+                                <th class="p-3 text-center">Нишонҳо</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-tbody" class="divide-y divide-slate-800 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: PROFILE & STATS -->
+        <section id="section-profile" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="glass-panel rounded-2xl p-6 border border-slate-700/80 space-y-6 flex flex-col justify-between">
+                    <div class="text-center space-y-3">
+                        <div class="relative w-24 h-24 mx-auto">
+                            <div class="w-full h-full rounded-full bg-gradient-to-tr from-brand-600 to-emeraldCustom-400 p-1 shadow-xl">
+                                <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-3xl font-black text-white">
+                                    С
+                                </div>
+                            </div>
+                            <span id="profile-level-indicator" class="absolute bottom-0 right-0 bg-emeraldCustom-500 text-slate-950 font-black text-xs px-2 py-0.5 rounded-full border-2 border-slate-900 shadow">
+                                12
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Содиқ</h3>
+                            <p class="text-xs text-slate-400">Донишгоҳи давлатии Кӯлоб ба номи А. Рӯдакӣ</p>
+                        </div>
+                        <div class="inline-block px-3 py-1 rounded-full bg-emeraldCustom-500/10 border border-emeraldCustom-500/20 text-emeraldCustom-400 text-xs font-semibold">
+                            Рӯяндаи Математик
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between text-xs font-semibold">
+                            <span id="profile-level-label" class="text-slate-400">Сатҳи 12</span>
+                            <span id="profile-xp-progress" class="text-brand-400">1280 / 1500 XP</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                            <div id="profile-xp-bar" class="h-full bg-gradient-to-r from-brand-500 to-emeraldCustom-400 rounded-full transition-all duration-500" style="width: 85%"></div>
+                        </div>
+                        <p id="profile-xp-remaining" class="text-[11px] text-slate-500 text-right">Боз 220 XP барои сатҳи 13</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-700/80 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 text-xl font-bold">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <div id="stats-total-solved" class="text-2xl font-black text-white">48</div>
+                                <div class="text-xs text-slate-400">Масъалаҳои ҳалшуда</div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-700/80 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-emeraldCustom-500/10 border border-emeraldCustom-500/20 flex items-center justify-center text-emeraldCustom-400 text-xl font-bold">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <div>
+                                <div id="stats-accuracy" class="text-2xl font-black text-white">92%</div>
+                                <div class="text-xs text-slate-400">Дақиқияти ҷавобҳо</div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-5 rounded-2xl border border-slate-700/80 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl font-bold">
+                                <i class="fa-solid fa-fire text-rose-500"></i>
+                            </div>
+                            <div>
+                                <div id="stats-streak-text" class="text-2xl font-black text-white">7 Рӯз</div>
+                                <div class="text-xs text-slate-400">Силсилаи омӯзиш</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl border border-slate-700/80 space-y-4">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-medal text-amber-400"></i> Нишонҳо ва Муваффақиятҳо
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-emeraldCustom-500/30 flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-emeraldCustom-500/20 flex items-center justify-center text-emeraldCustom-400 text-lg">
+                                    <i class="fa-solid fa-square-root-variable"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white">Устоди Алгебра</h4>
+                                    <p class="text-[11px] text-slate-400">20 масъалаи алгебравӣ ҳал шуд</p>
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-brand-500/30 flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-brand-500/20 flex items-center justify-center text-brand-400 text-lg">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white">Шӯълавари Ҳисоб</h4>
+                                    <p class="text-[11px] text-slate-400">5 ҷавоби дурусти паиҳам</p>
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-amber-500/30 flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 text-lg">
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white">Фаъоли Ҳафта</h4>
+                                    <p class="text-[11px] text-slate-400">Омӯзиши пайваста дар 7 рӯз</p>
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 opacity-60 flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-500 text-lg">
+                                    <i class="fa-solid fa-shapes"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-300">Қаҳрамони Геометрия</h4>
+                                    <p class="text-[11px] text-slate-500">10 масъалаи геометриро ҳал кунед</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ATTENDANCE PENALTY NOTIFICATION MODAL -->
+    <div id="penalty-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full rounded-3xl p-6 border border-rose-500/50 shadow-2xl space-y-4 animate-fade-in text-center relative overflow-hidden">
+            <div class="w-16 h-16 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-500 mx-auto flex items-center justify-center text-3xl shadow glow-red">
+                <i class="fa-solid fa-calendar-xmark"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white">Огоҳӣ: Камкунии баллҳо (XP)!</h3>
+            <p id="penalty-modal-text" class="text-xs text-slate-300 leading-relaxed">
+                Шумо дар рӯзҳои гузашта ба барнома надаромадед! Мувофиқи қоидаҳои "Академияи Рақамӣ", барои ҳар як рӯзи ғоибӣ баллҳои шумо кам карда мешаванд.
+            </p>
+            <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-bold">
+                Ҷарима: <span id="penalty-amount-text">-50 XP</span> ва барқароршавии силсила ба 1 рӯз!
+            </div>
+            <button onclick="closePenaltyModal()" class="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow transition-all">
+                Фаҳмидам, дигар ғоиб намешавам!
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-slate-800 bg-slate-950/80 py-4 px-4 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>© 2026 "Академияи Рақамӣ". Аз тарафи Содиқ сохта шудааст.</span>
+            <span class="text-slate-400">Барои донишҷӯён ва хонандагони Тоҷикистон</span>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let currentState = {
+            category: 'arithmetic', 
+            difficulty: 'easy',     
+            isContinuousMode: true,
+            xp: 1280,
+            streak: 7,
+            solvedCount: 48,
+            correctCount: 44,
+            currentProblem: null,
+            autoTimer: null,
+            lastLoginDate: null
+        };
+
+        const seenProblems = new Set();
+
+        const leaderboardData = [
+            { rank: 1, name: "Фарангис Назарова", school: "Лисеи №1, ш. Душанбе", xp: 2450, badge: "Нобиғаи Математика" },
+            { rank: 2, name: "Содиқ", school: "ДДК ба номи А. Рӯдакӣ (Шумо)", xp: 1280, badge: "Устоди Алгебра", isUser: true },
+            { rank: 3, name: "Анушервон Раҳимов", school: "Гимназияи №2, ш. Хӯҷанд", xp: 1190, badge: "Шӯълавари Ҳисоб" },
+            { rank: 4, name: "Ҷамшед Саидов", school: "МТМУ №5, ш. Кӯлоб", xp: 980, badge: "Фаъоли Ҳафта" },
+            { rank: 5, name: "Манижа Каримова", school: "Лисеи Оғохон, ш. Хоруғ", xp: 870, badge: "Рӯяндаи Математик" },
+            { rank: 6, name: "Давлатёр Шарипов", school: "МТМУ №12, ш. Бохтар", xp: 740, badge: "Муҳаққиқ" },
+            { rank: 7, name: "Ситораи Ҷалол", school: "МТМУ №1, ш. Турсунзода", xp: 620, badge: "Оғозкунанда" }
+        ];
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+        }
+
+        function playSound(type) {
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.25); 
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
+                }
+            } catch (e) {}
+        }
+
+        function checkDailyAttendance() {
+            const today = new Date().toDateString();
+            const storedLastLogin = localStorage.getItem('academy_last_login');
+
+            if (storedLastLogin) {
+                const lastDate = new Date(storedLastLogin);
+                const currDate = new Date(today);
+                const diffTime = Math.abs(currDate - lastDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays > 1) {
+                    const missedDays = diffDays - 1;
+                    const penaltyXP = missedDays * 50;
+
+                    currentState.xp = Math.max(0, currentState.xp - penaltyXP);
+                    currentState.streak = 1;
+
+                    document.getElementById('penalty-amount-text').innerText = `-${penaltyXP} XP (${missedDays} рӯзи ғоибӣ)`;
+                    document.getElementById('penalty-modal').classList.remove('hidden');
+                    playSound('error');
+                }
+            }
+
+            localStorage.setItem('academy_last_login', today);
+            localStorage.setItem('academy_streak', currentState.streak);
+            updateStats();
+        }
+
+        function simulateMissedDay() {
+            const missedDays = 1;
+            const penaltyXP = missedDays * 50;
+
+            currentState.xp = Math.max(0, currentState.xp - penaltyXP);
+            currentState.streak = 1;
+
+            document.getElementById('penalty-amount-text').innerText = `-${penaltyXP} XP (1 рӯзи ғоибӣ симуляция шуд)`;
+            document.getElementById('penalty-modal').classList.remove('hidden');
+            playSound('error');
+
+            updateStats();
+        }
+
+        function closePenaltyModal() {
+            document.getElementById('penalty-modal').classList.add('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+
+            const btnGen = document.getElementById('tab-btn-generator');
+            const btnLead = document.getElementById('tab-btn-leaderboard');
+            const btnProf = document.getElementById('tab-btn-profile');
+
+            [btnGen, btnLead, btnProf].forEach(btn => {
+                btn.className = "flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50";
+            });
+
+            if (tabId === 'generator') {
+                btnGen.className = "flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 bg-brand-600 text-white shadow-md glow-effect";
+            } else if (tabId === 'leaderboard') {
+                btnLead.className = "flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 bg-brand-600 text-white shadow-md glow-effect";
+            } else if (tabId === 'profile') {
+                btnProf.className = "flex-1 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 bg-brand-600 text-white shadow-md glow-effect";
+            }
+        }
+
+        function setCategory(cat) {
+            currentState.category = cat;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = "category-btn p-3 rounded-xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition-all bg-slate-800/80 border-slate-700 text-slate-400 hover:border-slate-600";
+            });
+            document.getElementById(`cat-${cat}`).className = "category-btn p-3 rounded-xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition-all bg-brand-600/20 border-brand-500 text-white shadow";
+            generateNewProblem(true);
+        }
+
+        function setDifficulty(diff) {
+            currentState.difficulty = diff;
+            document.querySelectorAll('.diff-btn').forEach(btn => {
+                btn.className = "diff-btn py-2.5 rounded-xl border text-xs font-semibold text-center transition-all bg-slate-800/80 border-slate-700 text-slate-400 hover:border-slate-600";
+            });
+
+            const diffBtn = document.getElementById(`diff-${diff}`);
+            if (diff === 'easy') {
+                diffBtn.className = "diff-btn py-2.5 rounded-xl border text-xs font-semibold text-center transition-all bg-emeraldCustom-500/20 border-emeraldCustom-500 text-emeraldCustom-400";
+                document.getElementById('xp-reward-text').innerText = "+10 XP";
+            } else if (diff === 'medium') {
+                diffBtn.className = "diff-btn py-2.5 rounded-xl border text-xs font-semibold text-center transition-all bg-amber-500/20 border-amber-500 text-amber-400";
+                document.getElementById('xp-reward-text').innerText = "+20 XP";
+            } else if (diff === 'hard') {
+                diffBtn.className = "diff-btn py-2.5 rounded-xl border text-xs font-semibold text-center transition-all bg-rose-500/20 border-rose-500 text-rose-400";
+                document.getElementById('xp-reward-text').innerText = "+35 XP";
+            }
+            generateNewProblem(true);
+        }
+
+        function toggleContinuousMode() {
+            currentState.isContinuousMode = document.getElementById('continuous-mode-toggle').checked;
+        }
+
+        function buildUniqueProblem(cat, diff) {
+            let p = {};
+            let signature = "";
+            let attempts = 0;
+
+            do {
+                attempts++;
+                if (cat === 'arithmetic') {
+                    if (diff === 'easy') {
+                        const ops = ['+', '-'];
+                        const op = ops[Math.floor(Math.random() * ops.length)];
+                        if (op === '+') {
+                            const a = Math.floor(Math.random() * 190) + 10;
+                            const b = Math.floor(Math.random() * 190) + 10;
+                            signature = `ari_e_+_${a}_${b}`;
+                            p = {
+                                question: `Қимати ифодаро ҳисоб кунед: ${a} + ${b} = ?`,
+                                hint: "Амалҳои ҷамъро бодиққат иҷро кунед.",
+                                answer: a + b,
+                                methods: [
+                                    { name: "Усули 1: Ҷамъкунии разрядҳо", text: `Аввал даҳиҳо ва сотҳо: ${Math.floor(a/10)*10} + ${Math.floor(b/10)*10} = ${Math.floor(a/10)*10 + Math.floor(b/10)*10}. Сипас воҳидҳо: ${a%10} + ${b%10} = ${(a%10)+(b%10)}. Ҷамъ: ${a+b}.` },
+                                    { name: "Усули 2: Паиҳам ҷамъ кардан", text: `Ба ${a} аввал ${Math.floor(b/10)*10} илова кунед, сипас ${b%10}-ро: ${a + Math.floor(b/10)*10} + ${b%10} = ${a+b}.` }
+                                ]
+                            };
+                        } else {
+                            const a = Math.floor(Math.random() * 180) + 20;
+                            const b = Math.floor(Math.random() * a) + 1;
+                            signature = `ari_e_-_${a}_${b}`;
+                            p = {
+                                question: `Қимати ифодаро ҳисоб кунед: ${a} - ${b} = ?`,
+                                hint: "Амали тарҳро иҷро кунед.",
+                                answer: a - b,
+                                methods: [
+                                    { name: "Усули 1: Тарҳкунии қадам ба қадам", text: `Аввал ${Math.floor(b/10)*10}-ро тарҳ кунед: ${a - Math.floor(b/10)*10}, сипас ${b%10}-ро: ${a-b}.` },
+                                    { name: "Усули 2: Санҷиш бо ҷамъ", text: `Кадом адад + ${b} баробари ${a} мешавад? Ҷавоб: ${a-b}.` }
+                                ]
+                            };
+                        }
+                    } else if (diff === 'medium') {
+                        const a = Math.floor(Math.random() * 25) + 3;
+                        const b = Math.floor(Math.random() * 12) + 3;
+                        const c = Math.floor(Math.random() * 40) + 5;
+                        signature = `ari_m_*_${a}_${b}_${c}`;
+                        p = {
+                            question: `Қимати ифодаро ҳисоб кунед: (${a} × ${b}) - ${c} = ?`,
+                            hint: "Аввал амали зарб, сипас тарҳро иҷро кунед.",
+                            answer: (a * b) - c,
+                            methods: [
+                                { name: "Усули 1: Тартиби иҷрои амалҳо", text: `1) Зарб: ${a} × ${b} = ${a*b}. 2) Тарҳ: ${a*b} - ${c} = ${(a*b)-c}.` },
+                                { name: "Усули 2: Соддагардонӣ", text: `Натиҷаи зарб ${a*b} аст. Аз он ${c}-ро кам кунед: ${(a*b)-c}.` }
+                            ]
+                        };
+                    } else {
+                        const percent = (Math.floor(Math.random() * 9) + 1) * 5;
+                        const val = (Math.floor(Math.random() * 20) + 2) * 20;
+                        const ans = (percent / 100) * val;
+                        signature = `ari_h_%_${percent}_${val}`;
+                        p = {
+                            question: `${percent}%-и адади ${val}-ро ёбед.`,
+                            hint: "Фоизро ба 100 тақсим карда ба адад зарб занед.",
+                            answer: ans,
+                            methods: [
+                                { name: "Усули 1: Касри оддӣ", text: `${percent}% = ${percent}/100. Натиҷа: (${val} × ${percent}) / 100 = ${ans}.` },
+                                { name: "Усули 2: Таносуб", text: `${val} -> 100%, X -> ${percent}%. X = (${val} × ${percent}) / 100 = ${ans}.` }
+                            ]
+                        };
+                    }
+                } else if (cat === 'algebra') {
+                    if (diff === 'easy') {
+                        const x = Math.floor(Math.random() * 40) + 2;
+                        const b = Math.floor(Math.random() * 35) + 5;
+                        const c = x + b;
+                        signature = `alg_e_+_${b}_${c}`;
+                        p = {
+                            question: `Муодиларо ҳал кунед: x + ${b} = ${c}`,
+                            hint: "Мафҳуми номаълум x-ро аз муодила ёбед.",
+                            answer: x,
+                            methods: [
+                                { name: "Усули 1: Интиқоли аъзо", text: `x = ${c} - ${b} => x = ${x}.` },
+                                { name: "Усули 2: Санҷиши мантиқӣ", text: `Ададе, ки бо ${b} ҷамъ шуда ${c} мешавад: ${x}.` }
+                            ]
+                        };
+                    } else if (diff === 'medium') {
+                        const a = Math.floor(Math.random() * 8) + 2;
+                        const x = Math.floor(Math.random() * 15) + 1;
+                        const b = Math.floor(Math.random() * 20) + 2;
+                        const c = (a * x) + b;
+                        signature = `alg_m_lin_${a}_${b}_${c}`;
+                        p = {
+                            question: `Муодиларо ҳал кунед: ${a}x + ${b} = ${c}`,
+                            hint: "Аъзои озодро интиқол диҳед, сипас ба зариби x тақсим кунед.",
+                            answer: x,
+                            methods: [
+                                { name: "Усули 1: Қадам ба қадам", text: `1) ${a}x = ${c} - ${b} = ${c-b}. 2) x = ${c-b} / ${a} = ${x}.` },
+                                { name: "Усули 2: Амали баръакс", text: `Аз ${c} тарҳ кунед ${b}-ро, ва ба ${a} тақсим кунед: ${x}.` }
+                            ]
+                        };
+                    } else {
+                        const r1 = Math.floor(Math.random() * 9) + 1;
+                        const r2 = Math.floor(Math.random() * 9) + 1;
+                        const b = -(r1 + r2);
+                        const c = r1 * r2;
+                        const maxRoot = Math.max(r1, r2);
+                        signature = `alg_h_quad_${b}_${c}`;
+                        p = {
+                            question: `Решаи мусбати бузургтарини муодилаи квадратиро ёбед: x² ${b >= 0 ? '+ ' + b : '- ' + Math.abs(b)}x + ${c} = 0`,
+                            hint: "Формулаи дискриминант ё теоремаи Виетро истифода баред.",
+                            answer: maxRoot,
+                            methods: [
+                                { name: "Усули 1: Дискриминант (D)", text: `D = (${b})² - 4(1)(${c}) = ${b*b - 4*c}. Решаҳо: x₁ = ${r1}, x₂ = ${r2}. Бузургтарин: ${maxRoot}.` },
+                                { name: "Усули 2: Теоремаи Виет", text: `x₁ + x₂ = ${r1+r2}, x₁ × x₂ = ${c}. Решаҳо: ${r1} ва ${r2}.` }
+                            ]
+                        };
+                    }
+                } else if (cat === 'geometry') {
+                    if (diff === 'easy') {
+                        const a = Math.floor(Math.random() * 25) + 3;
+                        const b = Math.floor(Math.random() * 15) + 2;
+                        signature = `geo_e_rect_${a}_${b}`;
+                        p = {
+                            question: `Масоҳати росткунҷаро ёбед, агар тарафҳои он a = ${a} см ва b = ${b} см бошанд.`,
+                            hint: "Формула: S = a × b",
+                            answer: a * b,
+                            methods: [
+                                { name: "Усули 1: Формулаи мустақим", text: `S = ${a} × ${b} = ${a*b} см².` },
+                                { name: "Усули 2: Масоҳати шабакавӣ", text: `${b} қатори ${a}-см² = ${a*b} см².` }
+                            ]
+                        };
+                    } else if (diff === 'medium') {
+                        const a = Math.floor(Math.random() * 20) + 2;
+                        signature = `geo_m_sq_${a}`;
+                        p = {
+                            question: `Периметри квадратро ёбед, агар масоҳати он S = ${a * a} см² бошад.`,
+                            hint: "Аввал тарафи квадратро аз √S ёбед, сипас P = 4a.",
+                            answer: 4 * a,
+                            methods: [
+                                { name: "Усули 1: Думарҳилагӣ", text: `1) Тараф a = √${a*a} = ${a} см. 2) Периметр P = 4 × ${a} = ${4*a} см.` },
+                                { name: "Усули 2: Формулаи якҷоя", text: `P = 4 × √S = 4 × √${a*a} = ${4*a} см.` }
+                            ]
+                        };
+                    } else {
+                        const base = (Math.floor(Math.random() * 15) + 2) * 2;
+                        const height = Math.floor(Math.random() * 18) + 3;
+                        signature = `geo_h_tri_${base}_${height}`;
+                        p = {
+                            question: `Масоҳати гушак (кунҷ/мусаллас)-ро ёбед, агар асосаш a = ${base} см ва баландиаш h = ${height} см бошад.`,
+                            hint: "Формула: S = (a × h) / 2",
+                            answer: (base * height) / 2,
+                            methods: [
+                                { name: "Усули 1: Формулаи стандартии мусаллас", text: `S = (${base} × ${height}) / 2 = ${(base*height)/2} см².` },
+                                { name: "Усули 2: Аз ним-асос", text: `Ним-асос = ${base/2} см. S = ${base/2} × ${height} = ${(base*height)/2} см².` }
+                            ]
+                        };
+                    }
+                } else {
+                    if (diff === 'easy') {
+                        const x = Math.floor(Math.random() * 20) + 2;
+                        const a = Math.floor(Math.random() * 9) + 2;
+                        signature = `eq_e_mult_${a}_${x}`;
+                        p = {
+                            question: `Муодиларо ҳал кунед: ${a}x = ${a * x}`,
+                            hint: "Адади ростро ба зариби x тақсим кунед.",
+                            answer: x,
+                            methods: [
+                                { name: "Усули 1: Тақсимоти мустақим", text: `x = ${a*x} / ${a} = ${x}.` },
+                                { name: "Усули 2: Ҷайбкунӣ", text: `${a} × x = ${a} × ${x} => x = ${x}.` }
+                            ]
+                        };
+                    } else if (diff === 'medium') {
+                        const x = Math.floor(Math.random() * 25) + 2;
+                        const k = Math.floor(Math.random() * 10) + 2;
+                        signature = `eq_m_sys_${x}_${k}`;
+                        p = {
+                            question: `Системаи муодилаҳо: x + y = ${x + k}, x - y = ${x - k}. Қимати x-ро ёбед.`,
+                            hint: "Муодилаҳоро аъзо ба аъзо ҷамъ кунед.",
+                            answer: x,
+                            methods: [
+                                { name: "Усули 1: Ҷамъкунии аъзо ба аъзо", text: `(x + y) + (x - y) = ${x+k} + ${x-k} => 2x = ${2*x} => x = ${x}.` },
+                                { name: "Усули 2: Ивазкунӣ", text: `y = ${x+k} - x. Дар муодилаи дуюм гузоред ва x = ${x}-ро ёбед.` }
+                            ]
+                        };
+                    } else {
+                        const x = Math.floor(Math.random() * 15) + 2;
+                        const c1 = Math.floor(Math.random() * 4) + 2;
+                        const c2 = Math.floor(Math.random() * 4) + 1;
+                        const constVal = (c1 * (x + 2)) - (c2 * (x - 1));
+                        signature = `eq_h_complex_${c1}_${c2}_${x}`;
+                        p = {
+                            question: `Муодиларо ҳал кунед: ${c1}(x + 2) - ${c2}(x - 1) = ${constVal}`,
+                            hint: "Қавсҳоро кушоед ва аъзоҳои монандро ҷамъ кунед.",
+                            answer: x,
+                            methods: [
+                                { name: "Усули 1: Кушодани қавсҳо", text: `${c1}x + ${c1*2} - ${c2}x + ${c2} = ${constVal} => (${c1-c2})x + ${c1*2 + c2} = ${constVal} => x = ${x}.` },
+                                { name: "Усули 2: Ҷобаҷогузорӣ", text: `Муодиларо содда карда, x = ${x}-ро ҳосил мекунем.` }
+                            ]
+                        };
+                    }
+                }
+
+            } while (seenProblems.has(signature) && attempts < 100);
+
+            seenProblems.add(signature);
+            return p;
+        }
+
+        function generateNewProblem(clearTimer = false) {
+            if (clearTimer && currentState.autoTimer) {
+                clearTimeout(currentState.autoTimer);
+                currentState.autoTimer = null;
+            }
+
+            const inputField = document.getElementById('user-answer-input');
+            inputField.value = '';
+            inputField.disabled = false;
+            inputField.focus();
+
+            const feedback = document.getElementById('feedback-message');
+            feedback.classList.add('hidden');
+
+            document.getElementById('solutions-panel').classList.add('hidden');
+            document.getElementById('chevron-icon').style.transform = 'rotate(0deg)';
+
+            const randomId = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('problem-id-display').innerText = `#${randomId}`;
+
+            const p = buildUniqueProblem(currentState.category, currentState.difficulty);
+            currentState.currentProblem = p;
+
+            const contentBox = document.getElementById('question-content-box');
+            contentBox.classList.remove('animate-fade-in');
+            void contentBox.offsetWidth; 
+            contentBox.classList.add('animate-fade-in');
+
+            document.getElementById('question-text').innerText = p.question;
+            document.getElementById('question-hint').innerText = `Маслиҳат: ${p.hint}`;
+
+            const container = document.getElementById('methods-container');
+            container.innerHTML = '';
+            p.methods.forEach(m => {
+                const div = document.createElement('div');
+                div.className = "p-3.5 rounded-xl bg-slate-800/90 border border-slate-700 space-y-1";
+                div.innerHTML = `
+                    <h4 class="text-xs font-bold text-emeraldCustom-400">${m.name}</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">${m.text}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleSolutions() {
+            const panel = document.getElementById('solutions-panel');
+            const chevron = document.getElementById('chevron-icon');
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                panel.classList.add('hidden');
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function checkAnswer(e) {
+            e.preventDefault();
+            const inputField = document.getElementById('user-answer-input');
+            const inputVal = inputField.value.trim();
+            const feedback = document.getElementById('feedback-message');
+            const textWrapper = document.getElementById('feedback-text-wrapper');
+
+            if (!inputVal) return;
+
+            const userAns = parseFloat(inputVal);
+            const correctAns = currentState.currentProblem.answer;
+
+            feedback.classList.remove('hidden', 'bg-emeraldCustom-500/20', 'border-emeraldCustom-500', 'text-emeraldCustom-400', 'bg-rose-500/20', 'border-rose-500', 'text-rose-400');
+
+            inputField.disabled = true; 
+
+            if (Math.abs(userAns - correctAns) < 0.01) {
+                playSound('success');
+                confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+
+                feedback.classList.add('bg-emeraldCustom-500/20', 'border', 'border-emeraldCustom-500', 'text-emeraldCustom-400');
+                
+                let gainedXP = 10;
+                if (currentState.difficulty === 'medium') gainedXP = 20;
+                if (currentState.difficulty === 'hard') gainedXP = 35;
+
+                textWrapper.innerHTML = `<i class="fa-solid fa-circle-check text-lg"></i> <span><strong>Офарин! Ҷавоб дуруст аст.</strong> +${gainedXP} XP илова шуд.</span>`;
+
+                currentState.xp += gainedXP;
+                currentState.solvedCount += 1;
+                currentState.correctCount += 1;
+
+                updateStats();
+
+                if (currentState.isContinuousMode) {
+                    currentState.autoTimer = setTimeout(() => {
+                        generateNewProblem();
+                    }, 1800);
+                }
+
+            } else {
+                playSound('error');
+                feedback.classList.add('bg-rose-500/20', 'border', 'border-rose-500', 'text-rose-400');
+                textWrapper.innerHTML = `<i class="fa-solid fa-circle-xmark text-lg"></i> <span><strong>Ҷавоби нодуруст.</strong> Ҷавоби саҳеҳ: <strong>${correctAns}</strong></span>`;
+
+                currentState.solvedCount += 1;
+                updateStats();
+
+                if (currentState.isContinuousMode) {
+                    currentState.autoTimer = setTimeout(() => {
+                        generateNewProblem();
+                    }, 2800);
+                }
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('user-xp-display').innerText = currentState.xp;
+            document.getElementById('user-streak-display').innerText = currentState.streak;
+            document.getElementById('stats-streak-text').innerText = `${currentState.streak} Рӯз`;
+            document.getElementById('stats-total-solved').innerText = currentState.solvedCount;
+
+            const acc = Math.round((currentState.correctCount / currentState.solvedCount) * 100);
+            document.getElementById('stats-accuracy').innerText = `${acc}%`;
+
+            const currentLevel = Math.floor(currentState.xp / 100);
+            const currentLevelXP = currentState.xp % 100;
+
+            document.getElementById('user-level-badge').innerText = currentLevel;
+            document.getElementById('profile-level-indicator').innerText = currentLevel;
+            document.getElementById('profile-level-label').innerText = `Сатҳи ${currentLevel}`;
+            document.getElementById('profile-xp-progress').innerText = `${currentState.xp} XP`;
+            document.getElementById('profile-xp-bar').style.width = `${currentLevelXP}%`;
+            document.getElementById('profile-xp-remaining').innerText = `Боз ${100 - currentLevelXP} XP барои сатҳи ${currentLevel + 1}`;
+
+            const userEntry = leaderboardData.find(u => u.isUser);
+            if (userEntry) {
+                userEntry.xp = currentState.xp;
+            }
+            renderLeaderboard();
+        }
+
+        function renderLeaderboard() {
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = '';
+
+            leaderboardData.sort((a, b) => b.xp - a.xp);
+
+            leaderboardData.forEach((student, index) => {
+                const rank = index + 1;
+                const tr = document.createElement('tr');
+                tr.className = student.isUser
+                    ? "bg-brand-600/20 border-b border-brand-500/40 font-semibold"
+                    : "hover:bg-slate-800/50 transition-colors border-b border-slate-800";
+
+                let rankBadge = `<span class="font-bold text-slate-400">#${rank}</span>`;
+                if (rank === 1) rankBadge = `<span class="w-7 h-7 rounded-full bg-amber-400 text-slate-950 font-black flex items-center justify-center text-xs shadow glow-green"><i class="fa-solid fa-crown"></i></span>`;
+                if (rank === 2) rankBadge = `<span class="w-7 h-7 rounded-full bg-slate-300 text-slate-950 font-black flex items-center justify-center text-xs shadow">2</span>`;
+                if (rank === 3) rankBadge = `<span class="w-7 h-7 rounded-full bg-amber-700 text-white font-black flex items-center justify-center text-xs shadow">3</span>`;
+
+                tr.innerHTML = `
+                    <td class="p-3">${rankBadge}</td>
+                    <td class="p-3 font-bold text-white flex items-center gap-2">
+                        ${student.name}
+                        ${student.isUser ? '<span class="text-[10px] bg-brand-500 text-white px-1.5 py-0.2 rounded-full">Шумо</span>' : ''}
+                    </td>
+                    <td class="p-3 text-slate-400 text-xs">${student.school}</td>
+                    <td class="p-3 text-center font-bold text-amber-400">${student.xp} XP</td>
+                    <td class="p-3 text-center">
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">${student.badge}</span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterLeaderboard() {
+            const query = document.getElementById('search-leaderboard').value.toLowerCase();
+            const rows = document.querySelectorAll('#leaderboard-tbody tr');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        window.onload = function() {
+            checkDailyAttendance();
+            generateNewProblem();
+            renderLeaderboard();
+        };
+    </script>
+</body>
+</html>
